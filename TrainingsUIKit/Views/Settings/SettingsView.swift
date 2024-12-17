@@ -47,7 +47,7 @@ struct SettingsView: View {
                             }
                             
                             Button {
-                                isPresentLanguage.toggle()
+                                openAppSettings()
                             } label: {
                                 SettingButton(text: "Choose language")
                             }
@@ -67,73 +67,17 @@ struct SettingsView: View {
             
             //MARK: - Language
             Color.black.ignoresSafeArea().opacity(isPresentLanguage ? 0.5 : 0)
-            if isPresentLanguage {
-                
-                VStack(spacing: 20) {
-                    Text("Restart the application".localized(languageManager.selectedLanguage))
-                        .minimumScaleFactor(0.5)
-                        .font(.title)
-                    Button(action: {
-                        languageManager.setLanguage("en") // Переключение на английский
-                    }) {
-                        HStack{
-                            Text("English")
-                            Spacer()
-                            if languageManager.selectedLanguage == "en" {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .resizable()
-                                    .frame(width: 28, height: 28)
-                                    .foregroundColor(.yellowApp)
-                                
-                            }else{
-                                Circle().foregroundStyle(.grayApp)
-                                    .frame(width: 28)
-                            }
-                        }.frame(minHeight: 30)
-                    }
-                    
-                    Button(action: {
-                        languageManager.setLanguage("ru") // Переключение на русский
-                    }) {
-                        HStack{
-                            Text("Русский")
-                            Spacer()
-                            if languageManager.selectedLanguage == "ru" {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .resizable()
-                                    .frame(width: 28, height: 28)
-                                    .foregroundColor(.yellowApp)
-                                
-                            }else{
-                                Circle().foregroundStyle(.grayApp)
-                                    .frame(width: 28)
-                            }
-                        }.frame(minHeight: 30)
-                    }
-                    
-                    HStack{
-                        Button {
-                            isPresentLanguage.toggle()
-                        } label: {
-                            CustomButtonView(color: .grayApp, text: "Cancel")
-                        }
-                        Button {
-                            isPresentLanguage.toggle()
-                        } label: {
-                            CustomButtonView( text: "Continue")
-                        }
-                        
-                    }
-                }
-                .padding(8)
-                .background(content: {
-                    Color.white.cornerRadius(20)
-                })
-                .frame(width: 310, height: 192)
-            }
             
         }
+        
     }
+    private func openAppSettings() {
+         guard let settingsURL = URL(string: UIApplication.openSettingsURLString),
+               UIApplication.shared.canOpenURL(settingsURL) else { return }
+         
+         UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+     }
+ 
 }
 
 #Preview {

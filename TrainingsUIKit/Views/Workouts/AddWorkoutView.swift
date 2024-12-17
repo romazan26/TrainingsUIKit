@@ -10,8 +10,9 @@ import SwiftUI
 struct AddWorkoutView: View {
     @StateObject var vm: MainViewModel
     @Environment(\.dismiss) var dismiss
+    @FocusState var isFocused: Bool
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottomTrailing) {
             Color.grayApp.ignoresSafeArea()
             VStack(spacing: 10) {
                 //MARK: - Top tool bar
@@ -24,6 +25,7 @@ struct AddWorkoutView: View {
                     }
                     Spacer()
                     TextField("Name training", text: $vm.simpleNameWorkout)
+                        .focused($isFocused)
                     Spacer()
                     Image(systemName: "pencil")
                         .foregroundStyle(.black)
@@ -31,14 +33,27 @@ struct AddWorkoutView: View {
                 
                 ScrollView {
                     //MARK: - Time workout
-                    TextField("0h 0min", text: $vm.simpleTimeWorkout)
-                        .padding()
-                        .background {
-                            Color.white.cornerRadius(10)
-                        }
+                    HStack {
+                        Text("Time workout")
+                        Spacer()
+                        DatePicker(
+                            "",
+                            selection: $vm.simpletime,
+                            displayedComponents: [.hourAndMinute]
+                        )
+                        .labelsHidden() // Скрыть метки
+                        
+                    }
+                    .padding()
+                    .background {
+                        Color.white.cornerRadius(10)
+                    }
+                    
+                    //MARK: - exercises list
                     ForEach(vm.simpleExercises) { exercise in
                         NewExerciseCellView(exercise: exercise, vm: vm)
-                            .padding(.top)
+                            .focused($isFocused)
+                            .padding(.top, 20)
                     }
                     
                     //New exercise
@@ -57,26 +72,34 @@ struct AddWorkoutView: View {
                                 .foregroundStyle(.gray)
                         }.frame(height: 72)
                     }
-
                     
+                    
+                    
+                   
                 }
-                //MARK: - Add workout button
-                HStack {
-                    Spacer()
-                    Button {
-                        vm.addWorkout()
-                        dismiss()
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .frame(width: 55, height: 55)
-                            .foregroundStyle(.yellowApp)
-                    }
-                    .padding()
-                }
-
-            }.padding()
+            }
+            .onTapGesture {
+                isFocused = false
+            }
+            .padding()
                 .navigationBarBackButtonHidden(true)
+            //MARK: - Add workout button
+            
+                Spacer()
+                Button {
+                    vm.addWorkout()
+                    dismiss()
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .resizable()
+                        .frame(width: 55, height: 55)
+                        .foregroundStyle(.yellowApp)
+                }
+                .padding()
+            
+        }
+        .onTapGesture {
+            isFocused = false
         }
     
     }

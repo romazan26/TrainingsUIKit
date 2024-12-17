@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import SwiftUI
 
 final class MainViewModel: ObservableObject {
     private var manager = CoreDataManager.instance
@@ -17,6 +18,15 @@ final class MainViewModel: ObservableObject {
     
     @Published var simpleNameWorkout = ""
     @Published var simpleTimeWorkout = ""
+    @Published var simpletime = Date()
+    
+    var cheak: String {
+        let hours = Calendar.current.component(.hour, from: simpletime)
+        let minutes = Calendar.current.component(.minute, from: simpletime)
+        let hoursString = NSLocalizedString("hours", comment: "Часы")
+        let minutesString = NSLocalizedString("minutes", comment: "Минуты")
+        return "\(hours)\(hoursString) \(minutes)\(minutesString)"
+    }
     
     @Published var simpleExercises: [Exercise] = []
     @Published var simpleNameExercise = ""
@@ -26,6 +36,9 @@ final class MainViewModel: ObservableObject {
     @Published var searchText: String = ""
     
     init(){
+        let calendar = Calendar.current
+        let now = Date()
+        self.simpletime = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: now) ?? Date()
         fetchWorkouts()
         fetchExercises()
         getFavoriteWorkouts()
@@ -86,7 +99,7 @@ final class MainViewModel: ObservableObject {
     func addWorkout(){
         let workout = Workout(context: manager.context)
         workout.name = simpleNameWorkout
-        workout.time = simpleTimeWorkout
+        workout.time = cheak
         for exercise in simpleExercises {
             addExercise(workout: workout, inexercise: exercise)
         }
@@ -119,6 +132,9 @@ final class MainViewModel: ObservableObject {
         simpleExercises.removeAll()
         simpleNameExercise = ""
         simpleApproaches = ""
+        let calendar = Calendar.current
+        let now = Date()
+        self.simpletime = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: now) ?? Date()
     }
     
     //MARK: - Get data

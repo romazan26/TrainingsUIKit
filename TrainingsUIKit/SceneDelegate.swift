@@ -10,14 +10,14 @@ import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
-    @StateObject private var languageManager = LanguageManager()
+
     var window: UIWindow?
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else {return}
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = UIHostingController(rootView: LoadingView().environmentObject(languageManager))
+        window?.rootViewController = UIHostingController(rootView: LoadingView())
         window?.makeKeyAndVisible()
     }
 
